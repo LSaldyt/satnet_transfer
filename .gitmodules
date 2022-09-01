@@ -1,0 +1,3 @@
+[submodule "ns-vqa"]
+	path = ns-vqa
+	url = https://github.com/kexinyi/ns-vqa
