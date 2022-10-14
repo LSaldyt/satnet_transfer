@@ -1,6 +1,0 @@
-[submodule "ns-vqa"]
-	path = ns-vqa
-	url = https://github.com/kexinyi/ns-vqa
-[submodule "AI-Feynman"]
-	path = AI-Feynman
-	url = https://github.com/SJ001/AI-Feynman
