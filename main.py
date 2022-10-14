@@ -8,8 +8,8 @@ install(show_locals=False)
 from rich import print
 from rich.pretty import pprint
 
-# pprint(os.environ)
 
+# By default, run a script in scripts/ dir
 def script_selector(script, *args):
     script_file = 'scripts/' + script + '.py'
     if os.path.isfile(script_file):
@@ -21,12 +21,16 @@ def script_selector(script, *args):
     return 0
 
 def main(args):
-    name = args[0]
+    if len(args) == 1:
+        name = args[0]
+    else:
+        name = 'main'
     script_file = 'scripts/' + name + '.py'
     if os.path.isfile(script_file):
         script_selector(*args)
     else:
         print(f'Script {script_file} not found!')
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
