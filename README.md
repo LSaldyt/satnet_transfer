@@ -6,7 +6,12 @@
 `git submodule update --init --recursive` to initialize submodules
 
 Install [Python 3.10](https://www.python.org/downloads/)  
-Install [poetry](https://python-poetry.org/) for package management.  
-Run `poetry update` to initialize and install all dependencies.  
+Optionally install [poetry](https://python-poetry.org/) for package management.  
+Optionally run `poetry update` to initialize and install all dependencies.  
+Alternatively, you can use `poetry export -f requirements.txt --output requirements.txt` to install with conda, pip, or venv directly.  
 
-Additional physics data for symbolic regression can be found in the [Feynman database](https://space.mit.edu/home/tegmark/aifeynman.html)
+### Usage
+
+The main entrypoint is the `./run` bash script. By default, this runs the _script_ `scripts/main.py`, or if provided with an argument, such as `./run download`, then it runs the corresponding script, e.x. `scripts/download.py`.
+
+To test SATNet, first use `./run download` and then `./run`
