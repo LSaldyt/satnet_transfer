@@ -67,6 +67,14 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "numpy"
+version = "1.23.4"
+description = "NumPy is the fundamental package for array computing with Python."
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[[package]]
 name = "parsimonious"
 version = "0.8.1"
 description = "(Soon to be) the fastest pure-Python PEG parser I could muster"
@@ -224,7 +232,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "98d228b11455b1bd58881d1532a7a84fbfd413fed0720dd2dd93fbbacc549f58"
+content-hash = "4f0714286b691f595cf44da287e588976a68c0a9c6a158036ed5a72a6547484e"
 
 [metadata.files]
 attrs = []
@@ -234,6 +242,7 @@ charset-normalizer = []
 commonmark = []
 funcy = []
 idna = []
+numpy = []
 parsimonious = []
 py-aiger = []
 py-aiger-cnf = []

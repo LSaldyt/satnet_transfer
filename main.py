@@ -8,7 +8,6 @@ install(show_locals=False)
 from rich import print
 from rich.pretty import pprint
 
-
 # By default, run a script in scripts/ dir
 def script_selector(script, *args):
     script_file = 'scripts/' + script + '.py'
@@ -25,6 +24,7 @@ def main(args):
         name = args[0]
     else:
         name = 'main'
+        args.insert(0, name)
     script_file = 'scripts/' + name + '.py'
     if os.path.isfile(script_file):
         script_selector(*args)

@@ -10,6 +10,7 @@ python = "^3.10"
 python-sat = {extras = ["pblib", "aiger"], version = "^0.1.7-alpha.19"}
 rich = "^12.6.0"
 requests = "^2.28.1"
+numpy = "^1.23.4"
 
 [tool.poetry.dev-dependencies]
 
