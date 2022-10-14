@@ -19,4 +19,9 @@ def generate_from(cnf_filename, rng, n_masks, n_samples):
     solver.append_formula(cnf.clauses)
     solver.solve()
     for model in solver.enum_models():
-        yield from mask(encode(model), rng, n_masks=n_masks, n_samples=n_samples)
+        for instance in mask(encode(model), rng, n_masks=n_masks, n_samples=n_samples):
+            if solver.solve(assumptions=[int((i + 1) * v)
+                             for i, v in enumerate(instance)
+                             if v != 0]):
+                yield instance # Filter for solvable sub-problems
+
