@@ -25,14 +25,13 @@ def generate_from(cnf_filename, rng, solver, limit=10000):
 def generate_dataset(cnf_filename, data_dir, rng, transform=lambda inp : inp, limit=10000):
     # Solve a given CNF filename up to limit solutions
     solver = Solver(name='g4')
-    inputs, labels = itertools.tee(
-            generate_from(cnf_filename, rng, solver, limit=limit))
+    inputs = generate_from(cnf_filename, rng, solver, limit=limit)
     # Map transform across inputs and flatten the result (up to limit)
-    inputs = itertools.islice((t for inp in inputs for t in transform(inp)), limit)
+    pairs = itertools.islice(((t, inp) for inp in inputs for t in transform(inp)), limit)
     # Filter inputs for those that are solvable
-    inputs = (inp for inp in inputs
-              if solver.solve(
-                  assumptions=[int((i + 1) * v) for i, v in enumerate(inp) if v != 0]))
+    pairs = (p for p in pairs if solver.solve(
+                  assumptions=[int((i + 1) * v) for i, v in enumerate(p[0]) if v != 0]))
+    inputs, labels = zip(*pairs)
     # Separate inputs and labels and save them to file as named arrays
     dest = data_dir / Path('{}_solutions.npz'.format(Path(cnf_filename).stem))
     np.savez_compressed(dest, **{f'input_{i}' : inp for i, inp in enumerate(inputs)},

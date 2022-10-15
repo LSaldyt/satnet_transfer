@@ -10,7 +10,7 @@ class SATDataset(torch.utils.data.Dataset):
         self.solutions = np.load(self.path)
 
     def __len__(self):
-        return len(self.solutions)
+        return len(self.solutions) // 2
 
     def __getitem__(self, i):
         inp = torch.from_numpy(self.solutions[f'input_{i}']) # -1, 1 encoding
