@@ -19,6 +19,7 @@ def run():
         s.update(metrics_file=f'metrics/{stem}.csv')
 
         dataset = SATDataset(problem_file)
+        print(f'Optimizing {stem} ({len(dataset)} examples)')
 
         inp, inp_mask, lbl = dataset[0]
         n   = inp.shape[0]
