@@ -12,16 +12,13 @@ selected_problems = [
     'PLANNING/BlocksWorld/blocksworld',
     'PLANNING/Logistics/logistics',
     'DIMACS/AIM/aim',
-    # 'DIMACS/PARITY/parity',
+    'DIMACS/PARITY/parity',
     'DIMACS/HANOI/hanoi',
     'DIMACS/PHOLE/pigeon-hole',
     'Bejing/Bejing',
     'GCP/gcp-large',
     'QG/QG'
         ]
-# selected_problems = ['DIMACS/PARITY/parity']
-# selected_problems = ['CBS/CBS_k3_n100_m403_b10']
-selected_problems = ['PLANNING/BlocksWorld/blocksworld']
 selected_problems = [(f'{base_url}{prob}{ext}', PurePath(f'{prob}{ext}'))
                      for prob in selected_problems]
 
@@ -36,18 +33,19 @@ def run():
     data_dir.mkdir(exist_ok=True)
     rng = np.random.default_rng(2022)
 
-    transforms = make_transforms(rng, size=1)
+    transforms = make_transforms(rng, size=10)
 
     for url, path in selected_problems:
         stem = path.with_suffix('').stem
         extract_dir = cnf_dir / Path(stem)
         extract_dir.mkdir(exist_ok=True)
         download_and_extract(url=url, target_path=path.name, extract_dir=extract_dir)
-        for filename in extract_dir.glob(f'*.cnf'):
-            print(filename)
-            for transform_name, transform in transforms:
-                dataset_path = generate_dataset(filename, data_dir, rng,
-                                                transform=transform, limit=10000,
-                                                suffix=f'_{transform_name}.npz')
-            break
-        break
+        try:
+            for filename in extract_dir.glob(f'*.cnf'):
+                print(filename)
+                for transform_name, transform in transforms:
+                    dataset_path = generate_dataset(filename, data_dir, rng,
+                                                    transform=transform, limit=10000,
+                                                    suffix=f'_{transform_name}.npz')
+        except SolverFailedError:
+            print(f'Solving failed for {stem}, skipping.')
