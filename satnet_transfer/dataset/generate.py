@@ -16,7 +16,7 @@ def mask(encoding, rng, n_masks, n_samples, mask_sym=0):
         yield instance
 
 def generate_from(cnf_filename, rng, solver, limit=10000):
-    cnf = CNF(from_file=f'cnf/{cnf_filename}')
+    cnf = CNF(from_file=cnf_filename)
     solver.append_formula(cnf.clauses)
     solver.solve()
     for solution in itertools.islice(solver.enum_models(), limit):
