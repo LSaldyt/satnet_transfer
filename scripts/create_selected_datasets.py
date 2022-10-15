@@ -12,13 +12,16 @@ selected_problems = [
     'PLANNING/BlocksWorld/blocksworld',
     'PLANNING/Logistics/logistics',
     'DIMACS/AIM/aim',
-    'DIMACS/PARITY/parity',
+    # 'DIMACS/PARITY/parity',
     'DIMACS/HANOI/hanoi',
     'DIMACS/PHOLE/pigeon-hole',
     'Bejing/Bejing',
     'GCP/gcp-large',
     'QG/QG'
         ]
+# selected_problems = ['DIMACS/PARITY/parity']
+# selected_problems = ['CBS/CBS_k3_n100_m403_b10']
+selected_problems = ['PLANNING/BlocksWorld/blocksworld']
 selected_problems = [(f'{base_url}{prob}{ext}', PurePath(f'{prob}{ext}'))
                      for prob in selected_problems]
 
@@ -33,7 +36,7 @@ def run():
     data_dir.mkdir(exist_ok=True)
     rng = np.random.default_rng(2022)
 
-    transforms = make_transforms(rng, size=10)
+    transforms = make_transforms(rng, size=1)
 
     for url, path in selected_problems:
         stem = path.with_suffix('').stem
@@ -46,3 +49,5 @@ def run():
                 dataset_path = generate_dataset(filename, data_dir, rng,
                                                 transform=transform, limit=10000,
                                                 suffix=f'_{transform_name}.npz')
+            break
+        break
