@@ -13,5 +13,9 @@ class SATDataset(torch.utils.data.Dataset):
         return len(self.solutions)
 
     def __getitem__(self, i):
-        return (torch.from_numpy(self.solutions[f'input_{i}']),
-                torch.from_numpy(self.solutions[f'label_{i}']))
+        inp = torch.from_numpy(self.solutions[f'input_{i}']) # -1, 1 encoding
+        lbl = torch.from_numpy(self.solutions[f'label_{i}'])
+        inp_mask = torch.where(torch.abs(inp) > 0, 1, 0)     # 0, 1 mask encoding
+        inp_mask = inp_mask.type(torch.IntTensor)
+        inp      = torch.where(inp < 0., 0., inp)            # [0, 1] probability enc.
+        return inp, inp_mask, lbl
