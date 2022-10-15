@@ -6,7 +6,7 @@ from satnet_transfer.loop import loop
 from satnet_transfer.settings import Settings
 
 def run():
-    s = Settings(batch_size=32, lr=3e-4, epochs=1)
+    s = Settings(batch_size=32, lr=3e-4, epochs=5)
     rng = np.random.default_rng(2022)
     dataset_path = Path('data/CBS_k3_n100_m403_b10_999_solutions.npz')
     dataset = SATDataset(dataset_path)
