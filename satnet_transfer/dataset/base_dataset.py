@@ -18,5 +18,6 @@ class SATDataset(torch.utils.data.Dataset):
         inp_mask = torch.where(torch.abs(inp) > 0, 1, 0)     # 0, 1 mask encoding
         inp_mask = inp_mask.type(torch.IntTensor)
         inp      = torch.where(inp < 0., 0., inp)            # [0, 1] probability enc.
+        lbl      = torch.where(lbl < 0., 0., lbl)            # [0, 1] probability enc.
         lbl      = lbl.type(torch.FloatTensor)
         return inp, inp_mask, lbl

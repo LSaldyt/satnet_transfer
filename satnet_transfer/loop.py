@@ -26,6 +26,7 @@ def epoch_loop(model, dataloader, optimizer, epoch_n, s, train=True):
                      / torch.sum(inp_mask))
         loss_agg += loss.item()
         err_agg  += bit_error
+        # print(inp, inp_mask, label)
         print('loss', loss.item(), 'error', bit_error)
     return loss_agg / len(dataloader), err_agg / len(dataloader)
 

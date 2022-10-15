@@ -16,8 +16,8 @@ def run():
     inp, inp_mask, lbl = dataset[0]
     n   = inp.shape[0]
     m   = 100
-    aux = 100
+    aux = 10
     sat = satnet.SATNet(n, m, aux)
 
-    optimizer  = torch.optim.AdamW(sat.parameters(), lr=s.lr)
+    optimizer = torch.optim.AdamW(sat.parameters(), lr=s.lr)
     loop(sat, dataset, optimizer, s)
