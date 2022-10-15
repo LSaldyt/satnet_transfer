@@ -132,3 +132,4 @@ MNIST
 cnf/*
 data/*
 metrics.csv
+metrics

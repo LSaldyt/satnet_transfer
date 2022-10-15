@@ -22,7 +22,8 @@ def generate_from(cnf_filename, rng, solver, limit=10000):
     for solution in itertools.islice(solver.enum_models(), limit):
         yield encode(solution)
 
-def generate_dataset(cnf_filename, data_dir, rng, transform=lambda inp : inp, limit=10000):
+def generate_dataset(cnf_filename, data_dir, rng, transform=lambda inp : inp, limit=10000,
+                     suffix='_solutions.npz'):
     # Solve a given CNF filename up to limit solutions
     solver = Solver(name='g4')
     inputs = generate_from(cnf_filename, rng, solver, limit=limit)
@@ -33,7 +34,7 @@ def generate_dataset(cnf_filename, data_dir, rng, transform=lambda inp : inp, li
                   assumptions=[int((i + 1) * v) for i, v in enumerate(p[0]) if v != 0]))
     inputs, labels = zip(*pairs)
     # Separate inputs and labels and save them to file as named arrays
-    dest = data_dir / Path('{}_solutions.npz'.format(Path(cnf_filename).stem))
+    dest = data_dir / Path('{}{}'.format(Path(cnf_filename).stem, suffix))
     np.savez_compressed(dest, **{f'input_{i}' : inp for i, inp in enumerate(inputs)},
                               **{f'label_{i}' : lbl for i, lbl in enumerate(labels)})
     return dest
