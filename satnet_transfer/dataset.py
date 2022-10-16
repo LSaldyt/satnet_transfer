@@ -1,6 +1,7 @@
 from pysat.formula import CNF
 from pysat.solvers import Solver
 import numpy as np
+from .download import *
 
 def encode(solution):
     return np.sign(solution, dtype=np.int32) # {-1, 1} vector
@@ -25,3 +26,5 @@ def generate_from(cnf_filename, rng, n_masks, n_samples):
                              if v != 0]):
                 yield instance # Filter for solvable sub-problems
 
+
+# download_and_extract
