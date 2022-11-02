@@ -1,5 +1,4 @@
 import numpy as np
-from satnet_transfer.dataset import *
 import satnet
 from time import time
 

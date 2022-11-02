@@ -1,2 +1,2 @@
 #!/bin/bash
-poetry run python cli.py $@
+python -m poetry run python cli.py $@
