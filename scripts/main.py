@@ -1,10 +1,6 @@
 import numpy as np
 import satnet
-from satnet_transfer.dataset import *
-import torch
-from satnet_transfer.loop import loop
-from satnet_transfer.settings import Settings
-from pathlib import Path
+from time import time
 
 def run():
     threshold = 1000
@@ -34,3 +30,12 @@ def run():
 
         optimizer = torch.optim.AdamW(sat.parameters(), lr=s.lr)
         loop(sat, dataset, optimizer, s)
+    # # filename = 'hanoi5.cnf'
+    # filename = 'CBS_k3_n100_m403_b10_999.cnf'
+    # start = time()
+    # count = 0
+    # for example in generate_from(filename, rng, n_masks=100, n_samples=100):
+    #     print(example)
+    #     count += 1
+    # end = time()
+    # print(f'Found {count} examples in {end - start} seconds')
