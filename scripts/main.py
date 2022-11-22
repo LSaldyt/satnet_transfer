@@ -7,6 +7,7 @@ from satnet_transfer.settings import Settings
 from pathlib import Path
 
 def run():
+    threshold = 1000
     rng = np.random.default_rng(2022)
     s   = Settings(batch_size=32, lr=2e-3, epochs=10, split=0.8)
 
@@ -19,6 +20,10 @@ def run():
         s.update(metrics_file=f'metrics/{stem}.csv')
 
         dataset = SATDataset(problem_file)
+        print(f'Considering problem {stem}')
+        if len(dataset) < threshold:
+            print(f'The dataset in {problem_file} is too small ({len(dataset)})')
+            continue
         print(f'Optimizing {stem} ({len(dataset)} examples)')
 
         inp, inp_mask, lbl = dataset[0]

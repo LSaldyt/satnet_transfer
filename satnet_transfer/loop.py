@@ -23,7 +23,7 @@ def epoch_loop(model, dataloader, optimizer, epoch_n, s, train=True):
             loss.backward()
             optimizer.step()
         bit_error = (torch.sum(torch.abs(torch.where(predictions > 0.5, 1.0, 0.) - label))
-                     / torch.sum(inp_mask))
+                     / torch.sum(inp_mask)).item()
         loss_agg += loss.item()
         err_agg  += bit_error
         # print(inp, inp_mask, label)
