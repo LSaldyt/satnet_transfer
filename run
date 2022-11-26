@@ -1,2 +1,5 @@
 #!/bin/bash
+cd SATNet
+poetry run python setup.py develop
+cd ..
 poetry run python cli.py $@
