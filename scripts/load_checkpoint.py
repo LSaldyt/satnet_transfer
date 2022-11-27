@@ -40,49 +40,69 @@ dimension_lookup = {
 
 # See https://pytorch.org/tutorials/recipes/recipes/saving_and_loading_a_general_checkpoint.html
 def run():
-    prob = 'logistics.d'
+    # prob = 'logistics.d'
+    # prob = 'CBS_k3_n100_m403_b10_930'
     e = 9
+
     checkpoint_dir  = Path(f'interpretability_experiment')
-    checkpoint_path = checkpoint_dir / Path(f'{prob}_mask.pt_{e}')
+    plot_dir = Path('plots/tri_modal_activations')
 
-    # Initialize a basic SATNet with the correct dimensions for the problem
-    n   = dimension_lookup[prob]
-    m   = 1000
-    aux = 1000
-    sat = satnet.SATNet(n, m, aux, tri_modal=True)
+    for prob in dimension_lookup:
+        checkpoint_path = checkpoint_dir / Path(f'{prob}_mask.pt_{e}')
+        if not checkpoint_path.is_file():
+            print(f'Skipping {prob} since it is empty')
+            continue
 
-    # Load the saved checkpoint based on prob and epoch vars
-    checkpoint = torch.load(checkpoint_path)
-    sat.load_state_dict(checkpoint['model_state_dict'])
-    # Can also load optimizer and epoch
+        # Initialize a basic SATNet with the correct dimensions for the problem
+        n   = dimension_lookup[prob]
+        m   = 1000
+        aux = 1000
+        sat = satnet.SATNet(n, m, aux, tri_modal=True)
 
-    # Plot heatmaps
-    sns.set_style('whitegrid')
-    hmap_kwargs = dict(xlabel='Input Variables', ylabel='SDP Clauses')
+        # Load the saved checkpoint based on prob and epoch vars
+        checkpoint = torch.load(checkpoint_path)
+        sat.load_state_dict(checkpoint['model_state_dict'])
+        # Can also load optimizer and epoch
 
-    # Normal S matrix heatmap
-    S = sat.S.detach().numpy()
-    ax = sns.heatmap(S)
-    ax.set(title='Normal S Matrix', **hmap_kwargs)
-    plt.show()
-    plt.savefig(f'plots/normal_s_matrix_{prob}_{e}.png')
+        S_normal = sat.S.detach().numpy()
+        var = 0.1 # Ending variance after annealing
+        S_tri = tri_modal_gauss(S_normal, var) / 4 # Hacked in normalization :)
 
-    # Tri Modal S matrix heatmap
-    # S_tri = tri_modal_gauss(S, 0.1) / 4 # Hacked in normalization :)
-    S_tri = tri_modal_gauss(S, 0.2) / 4 # Hacked in normalization :)
-    ax = sns.heatmap(S_tri)
-    ax.set(title='Tri Modal Gaussian Activation', **hmap_kwargs)
-    plt.show()
-    plt.savefig(f'plots/tri_modal_gaussian_s_matrix_{prob}_{e}.png')
+        # Plot heatmaps
+        sns.set_style('whitegrid')
+        hmap_kwargs = dict(ylabel='Input Variables', xlabel='SDP Clauses')
+        dist_kwargs = dict(xlabel='Range', ylabel='Probability')
+        marg_kwargs = dict(xlabel='Input Variable', ylabel='Weight', xticklabels=[])
+        bar_kwargs  = dict(saturation=1.0, width=5.0)
 
-    # Distribution plots
-    dist_kwargs = dict(xlabel='Range', ylabel='Probability')
-    ax = sns.displot(S.ravel())
-    ax.set(title='Normal S Matrix Distribution', **dist_kwargs)
-    plt.show()
-    plt.savefig(f'plots/normal_s_dist_{prob}_{e}.png')
+        def save(name, label, show=False, **kwargs):
+            plt.savefig(
+                plot_dir / f'{label.lower()}_{name}_{prob}_{e}.png',
+                **kwargs)
+            if show:
+                plt.show()
 
-    ax = sns.displot(S_tri.ravel())
-    ax.set(title='Tri Modal S Matrix Distribution', **dist_kwargs)
-    plt.show()
-    plt.savefig(f'plots/tri_modal_s_dist_{prob}_{e}.png')
+        for S, label in [(S_normal, 'Normal'), (S_tri, 'Tri Modal')]:
+            title_label = f'{label}'
+            # Heatmap
+            ax = sns.heatmap(S)
+            ax.set(title=f'{label} S Matrix', **hmap_kwargs)
+            save('s_matrix', label)
+
+            # Distribution plots (ravel)
+            ax = sns.displot(S.ravel())
+            ax.set(title=f'{label} S Matrix Distribution', **dist_kwargs)
+            save('s_dist', label, show=True)
+
+            continue
+
+            # Marginal Bar Plots
+            marginal = np.sum(np.abs(S), axis=1)
+            ax = sns.barplot(y=marginal, x=np.arange(marginal.shape[0]), **bar_kwargs)
+            ax.set(title=f'{label} Marginal Variable Weight', **marg_kwargs)
+            save('s_marginal', label, dpi=300)
+
+            sorted_marginal = np.sort(marginal)
+            ax = sns.barplot(y=marginal, x=np.arange(marginal.shape[0]), **bar_kwargs)
+            ax.set(title=f'{label} Sorted Marginal Variable Weight', **marg_kwargs)
+            save('s_sorted_marginal', label, dpi=300)
