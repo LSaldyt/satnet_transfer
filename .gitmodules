@@ -1,0 +1,3 @@
+[submodule "SATNet"]
+	path = SATNet
+	url = https://github.com/LSaldyt/SATNet

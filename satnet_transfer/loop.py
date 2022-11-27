@@ -1,14 +1,15 @@
 import torch
 import csv
 from rich.progress import track
-from torch.utils.data import *
+import torch.utils.data as td
+import torch
 
 def split(dataset, s):
     ''' Split a single dataset into test/train dataloaders '''
     l = len(dataset)
     train_n = int(l * s.split)
-    sets    = random_split(dataset, [train_n, l - train_n])
-    loaders = (DataLoader(ds, batch_size=s.batch_size) for ds in sets)
+    sets    = td.random_split(dataset, [train_n, l - train_n])
+    loaders = (td.DataLoader(ds, batch_size=s.batch_size) for ds in sets)
     return loaders
 
 def epoch_loop(model, dataloader, optimizer, epoch_n, s, train=True):
@@ -40,3 +41,11 @@ def loop(model, dataset, optimizer, s, train=True):
             test_loss,   test_error = epoch_loop(model, test_loader , optimizer, e, s, train=False)
             writer.writerow([train_loss,train_error,test_loss,test_error,e])
             outfile.flush()
+
+            torch.save({
+                'epoch': e,
+                'model_state_dict': model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'loss': train_loss,
+            }, f'{s.metrics_file.replace("csv", "pt")}_{e}')
+

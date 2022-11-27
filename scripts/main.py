@@ -1,8 +1,14 @@
 import numpy as np
 import satnet
 from time import time
+import torch
+from satnet_transfer.settings import Settings
+from satnet_transfer.dataset.base_dataset import SATDataset
+from satnet_transfer.loop import loop
+from pathlib import Path
 
 def run():
+    print(torch.cuda.is_available())
     threshold = 1000
     rng = np.random.default_rng(2022)
     s   = Settings(batch_size=32, lr=2e-3, epochs=10, split=0.8)
@@ -26,16 +32,7 @@ def run():
         n   = inp.shape[0]
         m   = 1000
         aux = 1000
-        sat = satnet.SATNet(n, m, aux)
+        sat = satnet.SATNet(n, m, aux, tri_modal=True)
 
         optimizer = torch.optim.AdamW(sat.parameters(), lr=s.lr)
         loop(sat, dataset, optimizer, s)
-    # # filename = 'hanoi5.cnf'
-    # filename = 'CBS_k3_n100_m403_b10_999.cnf'
-    # start = time()
-    # count = 0
-    # for example in generate_from(filename, rng, n_masks=100, n_samples=100):
-    #     print(example)
-    #     count += 1
-    # end = time()
-    # print(f'Found {count} examples in {end - start} seconds')
